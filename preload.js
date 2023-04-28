@@ -9,3 +9,10 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   })
 
+const {ipcRenderer, contextBridge} = require("electron")
+
+contextBridge.exposeInMainWorld("electronAPI",{
+  getImage:(cb)=>ipcRenderer.on("get-img",cb),
+  closeCamera:()=>ipcRenderer.send("close-camera")
+})
+

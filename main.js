@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu, shell} = require("electron")
+const {app, BrowserWindow, Menu, shell, ipcMain} = require("electron")
 const path = require("path")
 
 const template = [
@@ -20,7 +20,14 @@ const template = [
                         width:600,
                         height:600,
                         // backgroundColor: '#2e2c29' ,
-                        show:false
+                        show:false,
+                        webPreferences:{
+                            preload:path.join(__dirname,"cameraPreload.js")
+                        }
+                    })
+
+                    ipcMain.on("close-camera",(event,data)=>{
+                        win2.close()
                     })
 
                     win2.webContents.openDevTools()
@@ -68,12 +75,18 @@ const createWindow = ()=>{
     })
 
 
+    ipcMain.on("set-img",(event,data)=>{
+        console.log(data)
+        win.webContents.send("get-img",data)
+    })
     win.loadFile("index.html")
+    win.webContents.openDevTools()
 }
 
 
 app.whenReady().then(()=>{
     createWindow()
+
 
     app.on("activate",()=>{
         if(BrowserWindow.getAllWindows().length === 0) createWindow()

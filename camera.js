@@ -30,7 +30,12 @@ function capture(){
 
     const dataURL = canvas.toDataURL()
 
-    imageTag.src = dataURL
+    // imageTag.src = dataURL
+    window.electronAPI.setImage(dataURL)
+
+    new Notification("Image captured",{
+      body:"Your face has captured"
+    })
 }
 
 buttonCapture.addEventListener("click",()=>{
